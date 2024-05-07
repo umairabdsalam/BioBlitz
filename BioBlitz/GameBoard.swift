@@ -17,6 +17,7 @@ class GameBoard: ObservableObject {
     @Published var currentPlayer = Color.green
     @Published var greenScore = 1
     @Published var redScore = 1
+    @Published var winner: String? = nil
     
     private var bacteriaBeingInfected = 0
     
@@ -28,6 +29,11 @@ class GameBoard: ObservableObject {
     }
     
     func reset(){
+        winner = nil
+        currentPlayer = .green
+        redScore = 1
+        greenScore = 1
+        
         grid.removeAll()
         
         for row in 0..<rowCount {
@@ -136,10 +142,15 @@ class GameBoard: ObservableObject {
                 
             }
         }
+        updateScores()
         
     }
     
     func rotate(bacteria: Bacteria) {
+        guard bacteria.color == currentPlayer else { return }
+        guard bacteriaBeingInfected == 0 else { return }
+        guard winner == nil else { return }
+        
         objectWillChange.send()
         
         bacteria.direction = bacteria.direction.next
@@ -173,7 +184,19 @@ class GameBoard: ObservableObject {
         
         redScore = newRedScore
         greenScore = newGreenScore
-        
-        // more code to come
+       
+        if bacteriaBeingInfected == 0 {
+            withAnimation(.spring()){
+                if redScore == 0 {
+                    winner = "Green"
+                }
+                else if greenScore == 0 {
+                    winner = "Red"
+                }
+                else {
+                    changePlayer()
+                }
+            }
+        }
     }
 }

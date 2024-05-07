@@ -12,7 +12,9 @@ struct ContentView: View {
     var body: some View {
         VStack {
             HStack {
-                Text("GREEN: 0")
+                Text("GREEN: \(board.greenScore)")
+                    .padding(.horizontal)
+                    .background(Capsule().fill(.green).opacity(board.currentPlayer == .green ? 1 : 0))
                 
                 Spacer()
                 
@@ -20,10 +22,15 @@ struct ContentView: View {
                 
                 Spacer()
                 
-                Text("RED: 0")
+                Text("RED: \(board.redScore)")
+                    .padding(.horizontal)
+                    .background(Capsule().fill(.red).opacity(board.currentPlayer == .red ? 1 : 0))
             }
             .font(.system(size: 36).weight(.black))
             
+            ZStack {
+                
+           
             VStack {
                 ForEach(0..<11, id: \.self) { row in
                     HStack {
@@ -36,6 +43,26 @@ struct ContentView: View {
                     }
                 }
             }
+                if let winner = board.winner {
+                    VStack {
+                        Text("\(winner) Wins!")
+                            .font(.largeTitle)
+                        
+                        Button(action: board.reset) {
+                            Text("Play Again")
+                                .padding()
+                                .background(.blue)
+                                .clipShape(Capsule())
+                        }
+                        .buttonStyle(.plain)
+                    }
+                    .padding(40)
+                    .background(.black.opacity(0.85))
+                    .cornerRadius(25)
+                    .transition(.scale)
+                    
+                }
+        }
         }
         .padding()
         .fixedSize()
