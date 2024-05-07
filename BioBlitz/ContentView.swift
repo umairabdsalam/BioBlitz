@@ -30,7 +30,7 @@ struct ContentView: View {
                         ForEach(0..<22, id: \.self) { col in
                             let bacteria = board.grid[row][col]
                             BacteriaView(bacteria: bacteria) {
-                                //rotate this bacteria
+                                board.rotate(bacteria: bacteria)
                             }
                         }
                     }
